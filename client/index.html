@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <title>Shape Shifter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0a0e1a;
+      --bg-card: #161b2e;
+      --bg-card-2: #1f2540;
+      --border: #2a3252;
+      --text: #e8ecf5;
+      --text-dim: #8a92ad;
+      --hunter: #4ea1ff;
+      --shifter: #ff6b4e;
+      --gold: #ffd24a;
+      --green: #4ae28a;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%; width: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 30%, #1a2040 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, #2a1840 0%, transparent 50%),
+        var(--bg-deep);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-user-select: none; user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: none;
+    }
+    #game-container {
+      width: 100vw; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    canvas { display: block; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div id="game-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/network.js"></script>
+  <script src="js/LobbyScene.js"></script>
+  <script src="js/GameScene.js"></script>
+  <script src="js/EndScene.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
