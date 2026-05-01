@@ -13,7 +13,7 @@ window.Net = {
 
   connect() {
     if (this.socket) return this.socket;
-    this.socket = io(window.GAME_CONFIG.SERVER_URL, {
+    this.socket = io({
       transports: ['websocket', 'polling']
     });
     return this.socket;

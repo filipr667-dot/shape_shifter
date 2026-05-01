@@ -11,8 +11,12 @@ const { Server } = require('socket.io');
 
 const app = express();
 app.use(cors());
-app.get('/', (req, res) => res.send('Shape Shifter server is running.'));
+const path = require("path");
 
+app.use(express.static(path.join(__dirname, "client")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "index.html"));
+});
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: '*', methods: ['GET', 'POST'] }
