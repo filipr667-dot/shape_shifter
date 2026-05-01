@@ -10,7 +10,8 @@
  * Walls block both player movement (collisions client-side) AND
  * the hunter's flashlight scan (line-of-sight check on the server).
  */
-
+try {
+console.log("SERVER STARTING...")
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
@@ -390,7 +391,15 @@ io.on('connection', (socket) => {
   });
 });
 
+console.log("About to start server...");
+
+
 const PORT = process.env.PORT || 3000;
-service.listen(PORT, "0.0.0.0", () => {
+
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+} catch (err) {
+  console.error("CRASH:", err);
+}
