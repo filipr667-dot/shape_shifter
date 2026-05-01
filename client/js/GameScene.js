@@ -9,17 +9,12 @@ class GameScene extends Phaser.Scene {
     this.load.image('floor_r3', 'assets/tile_385.png');
     this.load.image('floor_r4', 'assets/tile_72.png');
 
-    for (let i = 0; i < 8; i++) {
-      this.load.image(`crate_${i}`, `assets/tile_${[51,52,483,538,528,419,406,337][i]}.png`);
-    }
-
     this.load.image('hunter', 'assets/manBlue_gun.png');
     this.load.image('shifter', 'assets/manBrown_hold.png');
   }
 
   create() {
     const socket = Net.socket;
-    const myId = socket.id;
 
     this.MAP_W = Net.mapWidth;
     this.MAP_H = Net.mapHeight;
@@ -47,26 +42,22 @@ class GameScene extends Phaser.Scene {
     // ----- Walls -----
     this.wallGroup = this.physics.add.staticGroup();
     Net.walls.forEach(w => {
-      const rect = this.add.rectangle(w.x + w.w / 2, w.y + w.h / 2, w.w, w.h, 0x444466);
+      const rect = this.add.rectangle(w.x + w.w / 2, w.y + w.h / 2, w.w, w.h, 0x3a3f5a);
       this.physics.add.existing(rect, true);
       this.wallGroup.add(rect);
     });
 
-    // ----- Decoys -----
-    this.decoyGfx = {};
-    Net.decoys.forEach(d => {
-      const crate = this.add.image(d.x, d.y, `crate_${d.type || 0}`);
-      crate.setDisplaySize(52, 52);
-      this.decoyGfx[d.id] = crate;
-    });
-
-    // 🔥 ----- PLAYERS (FIXED) -----
+    // ----- PLAYERS (FIXED + SAFE) -----
     this.players = {};
+    const myId = socket.id;
+
     Net.players.forEach(p => {
       const key = p.role === 'hunter' ? 'hunter' : 'shifter';
 
       const sprite = this.physics.add.image(p.x, p.y, key);
       sprite.setDisplaySize(48, 48);
+      sprite.body.setSize(36, 36);
+      sprite.setDepth(10);
       sprite.body.setCollideWorldBounds(true);
 
       this.physics.add.collider(sprite, this.wallGroup);
@@ -78,13 +69,18 @@ class GameScene extends Phaser.Scene {
       }
     });
 
-    // Camera follows YOU
+    // fallback (safety)
+    if (!this.me) {
+      this.me = this.physics.add.image(200, 200, Net.role === 'hunter' ? 'hunter' : 'shifter');
+    }
+
+    // camera
     this.cameras.main.startFollow(this.me);
 
-    // Controls
+    // controls
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    // 🔥 Movement sync
+    // ----- Movement Sync -----
     socket.on("playerMoved", ({ id, x, y }) => {
       const player = this.players[id];
       if (!player) return;
@@ -105,7 +101,7 @@ class GameScene extends Phaser.Scene {
     if (this.cursors.up.isDown) vy = -1;
     if (this.cursors.down.isDown) vy = 1;
 
-    const speed = 200;
+    const speed = 220;
     this.me.setVelocity(vx * speed, vy * speed);
 
     // send movement
