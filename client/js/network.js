@@ -1,6 +1,3 @@
-/**
- * Shared Socket.IO connection + cross-scene state.
- */
 window.Net = {
   socket: null,
   role: null,
@@ -14,25 +11,42 @@ window.Net = {
   connect() {
     if (this.socket) return this.socket;
 
-    // ✅ Correct connection (important)
     this.socket = io({
       transports: ['websocket', 'polling']
     });
 
-    // ✅ Debug: confirm connection
+    // 🔥 CONNECTION
     this.socket.on("connect", () => {
-      console.log("Connected to server:", this.socket.id);
+      console.log("✅ Connected:", this.socket.id);
     });
 
-    // ✅ Store game data when game starts
+    // 🔥 ROOM EVENTS
+    this.socket.on("roomCreated", (data) => {
+      console.log("🏠 Room created:", data);
+      this.roomCode = data.code;
+      this.role = data.role;
+    });
+
+    this.socket.on("roomJoined", (data) => {
+      console.log("👥 Room joined:", data);
+      this.roomCode = data.code;
+      this.role = data.role;
+    });
+
+    // 🔥 GAME START
     this.socket.on("gameStart", (data) => {
-      console.log("GAME START DATA:", data);
+      console.log("🚀 GAME START RECEIVED:", data);
 
       this.decoys = data.decoys;
       this.walls = data.walls;
       this.mapWidth = data.mapWidth;
       this.mapHeight = data.mapHeight;
       this.gameDuration = data.duration;
+    });
+
+    // 🔥 MOVEMENT
+    this.socket.on("playerMoved", (data) => {
+      console.log("Player moved:", data);
     });
 
     return this.socket;
