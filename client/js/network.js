@@ -7,6 +7,7 @@ window.Net = {
   mapWidth: 1200,
   mapHeight: 900,
   gameDuration: 180000,
+  players: [],
 
   connect() {
     if (this.socket) return this.socket;
@@ -15,38 +16,35 @@ window.Net = {
       transports: ['websocket', 'polling']
     });
 
-    // 🔥 CONNECTION
     this.socket.on("connect", () => {
-      console.log("✅ Connected:", this.socket.id);
+      console.log("Connected:", this.socket.id);
     });
 
-    // 🔥 ROOM EVENTS
     this.socket.on("roomCreated", (data) => {
-      console.log("🏠 Room created:", data);
       this.roomCode = data.code;
       this.role = data.role;
     });
 
     this.socket.on("roomJoined", (data) => {
-      console.log("👥 Room joined:", data);
       this.roomCode = data.code;
       this.role = data.role;
     });
 
-    // 🔥 GAME START
+    // 🔥 IMPORTANT FIX
     this.socket.on("gameStart", (data) => {
-      console.log("🚀 GAME START RECEIVED:", data);
+      console.log("GAME START:", data);
 
       this.decoys = data.decoys;
       this.walls = data.walls;
       this.mapWidth = data.mapWidth;
       this.mapHeight = data.mapHeight;
       this.gameDuration = data.duration;
-    });
 
-    // 🔥 MOVEMENT
-    this.socket.on("playerMoved", (data) => {
-      console.log("Player moved:", data);
+      // ✅ Convert players object → usable array
+      this.players = Object.entries(data.players).map(([id, p]) => ({
+        id,
+        ...p
+      }));
     });
 
     return this.socket;
