@@ -11,7 +11,7 @@
  * the hunter's flashlight scan (line-of-sight check on the server).
  */
 try {
-console.log("SERVER STARTING...")
+console.log("FILE LOADED");
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
@@ -396,8 +396,8 @@ console.log("About to start server...");
 
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
+server.listen(PORT,  () => {
+  console.log("Server started on port:" PORT);
 });
 
 } catch (err) {
